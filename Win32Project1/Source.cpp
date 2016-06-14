@@ -26,7 +26,9 @@ int x[100];
 int y[100];
 int startx, starty, stopx, stopy;
 int directie[4][2] = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-HWND hEdit1, hEdit2, hEdit3, hEdit4;
+HWND hEdit1,hEdit2,hEdit3,hEdit4;
+
+
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -61,7 +63,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
 	HWND hWnd = CreateWindowEx(NULL,
 		"Window Class",
 		"Labirint",
-		WS_OVERLAPPEDWINDOW,
+		WS_SYSMENU | WS_MINIMIZEBOX,
 		200,
 		200,
 		640,
@@ -102,20 +104,24 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		case WM_CREATE:
 		{             
-						  coordonate(hWnd);
-						  butoane(hWnd);
+						 
+						  
+							  coordonate(hWnd);
+							  butoane(hWnd);
+						  
 					  
 		}
 			break;
 		case WM_LBUTTONDOWN:
 		{
 							   
-			if (!IsDlgButtonChecked(hWnd, IDC_MAIN_BUTTON2))
+				if (!IsDlgButtonChecked(hWnd, IDC_MAIN_BUTTON2))
 					create_lab(hWnd, lParam);
 		}
 			break;
 		case WM_PAINT:
 		{
+		
 			teren(hWnd);
 		}
 			break;
@@ -128,6 +134,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 									break;
 								case IDC_MAIN_BUTTON1:
 									
+
 										if (IsDlgButtonChecked(hWnd, IDC_MAIN_BUTTON2))
 										{
 											
@@ -137,7 +144,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 											stopy = get_start_stop(hEdit4);
 
 											HDC hdc = GetDC(hWnd);
-											if (lab[startx][starty] == 1 && lab[stopx][stopy] == 1)
+											if (lab[startx][starty] == 1 && lab[stopx][stopy] == 1 && startx >= 0 && starty >= 0 && startx<10 && starty<10 && stopx >= 0 && stopy >= 0 && stopx<10 && stopy<10)
 											{
 
 												patrat(hdc, startx, starty, 2);
@@ -158,6 +165,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 
 											ReleaseDC(hWnd, hdc);
+									
 										}
 									break;
 								
@@ -209,10 +217,10 @@ void patrat(HDC hdc,int i,int j,int color )
 		  lab[i][j] = 1;
 		  break;
 	  case 2: SelectObject(hdc, hBrush3);
-		  lab[i][j] = 1;
+		  lab[i][j] = 2;
 		  break;
 	  case 3: SelectObject(hdc, hBrush2);
-		  lab[i][j] = 1;
+		  lab[i][j] = 3;
 		  break;
 
 
@@ -250,7 +258,11 @@ void teren(HWND hWnd)
 
 		for (int j = 0; j <= 9; j++)
 		{
-			patrat(hdc, i, j, 0);
+			
+			
+				patrat(hdc, i, j, lab[i][j]);
+
+			
 		}
 	}
 
@@ -432,10 +444,15 @@ int rezolva(int pas, int directiex,int directiey,HDC hdc)
 		{
 			x[pas] = directiex + directie[i][0];
 			y[pas] = directiey + directie[i][1];
-			SleepEx(500,FALSE);
+			
+			
+			Sleep(500);
+			
 				patrat(hdc, x[pas], y[pas], 2);
 			if (rezolva(pas + 1, directiex + directie[i][0], directiey + directie[i][1],hdc))return 1;
-			SleepEx(500, FALSE);
+			
+			Sleep(250);
+			
 			patrat(hdc, x[pas], y[pas], 1);
 		}
 		
